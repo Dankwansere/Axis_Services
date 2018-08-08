@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.sans.axis.domain.AxisResponse;
 import com.sans.axis.domain.GenericControlList;
 import com.sans.axis.domain.User;
 import com.sans.axis.service.IUserService;
@@ -26,19 +27,31 @@ public class UserController {
 	@Autowired
 	private IUserService userService;
 	private User user;
+	private AxisResponse axisResponse;
 	
 	
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
-	public ResponseEntity<User> getUser(@RequestBody User _user) {
+	public ResponseEntity<AxisResponse> getUser(@RequestBody User user) {
 		
-		System.out.println("User name: " + _user.getUserName());
+		this.axisResponse = new AxisResponse();
 		
-		this.user = userService.getUser(_user.getUserName(), _user.getPassWord());
-		if(this.user == null) {
-			return new ResponseEntity<User>(new User(), HttpStatus.OK);
+		try {
+			this.user = userService.getUser(user.getUserName(), user.getPassWord());
+			if(this.user == null) {
+				this.axisResponse.setStatus("Invalid");
+				return new ResponseEntity<AxisResponse>(this.axisResponse, HttpStatus.OK);
+			} else {
+				this.axisResponse.setData(this.user);
+				this.axisResponse.setStatus("Valid");
+				return new ResponseEntity<AxisResponse>(this.axisResponse, HttpStatus.OK);
+			}
+			
+		} catch (Exception ex) {
+			this.axisResponse.setStatus("Error");
+			this.axisResponse.setException(ex.getMessage());
+			return new ResponseEntity<AxisResponse>(this.axisResponse, HttpStatus.SERVICE_UNAVAILABLE);
+			
 		}
-		
-		return new ResponseEntity<User>(this.user, HttpStatus.OK);
 		
 	}
 	
