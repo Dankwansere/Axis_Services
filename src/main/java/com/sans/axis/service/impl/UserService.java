@@ -19,13 +19,19 @@ public class UserService implements IUserService  {
 	
 	@Override
 	public User getUser(String userName, String passWord) {
-		User user = customUserRepository.getUser(userName, passWord);	
-		if(user != null) {
-			return user;
-		}
-		else {
-			System.out.println("Unable to find user: " + userName);
-			return null;
+		try {
+			User user = customUserRepository.getUser(userName, passWord);	
+			if(user != null) {
+				user.setPassWord("");
+				return user;
+			}
+			else {
+				System.out.println("Unable to find user: " + userName);
+				return null;
+			}
+		} catch (Exception e) {
+			throw e;
+			//return null;
 		}
 	}
 	
