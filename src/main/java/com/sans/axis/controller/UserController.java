@@ -1,6 +1,7 @@
 package com.sans.axis.controller;
 
 import java.util.ArrayList;
+
 import java.util.Collections;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,7 @@ import com.sans.axis.domain.AxisResponse;
 import com.sans.axis.domain.GenericControlList;
 import com.sans.axis.domain.User;
 import com.sans.axis.service.IUserService;
+import com.sans.axis.commons.AxisResponseCodes;
 
 @RestController
 @RequestMapping(value = "/user/")
@@ -38,11 +40,11 @@ public class UserController {
 		try {
 			this.user = userService.getUser(user.getUserName(), user.getPassWord());
 			if(this.user == null) {
-				this.axisResponse.setStatus("Invalid");
+				this.axisResponse.setStatus(AxisResponseCodes.STATUS_INVALID);
 				return new ResponseEntity<AxisResponse>(this.axisResponse, HttpStatus.OK);
 			} else {
 				this.axisResponse.setData(this.user);
-				this.axisResponse.setStatus("Valid");
+				this.axisResponse.setStatus(AxisResponseCodes.STATUS_VALID);
 				return new ResponseEntity<AxisResponse>(this.axisResponse, HttpStatus.OK);
 			}
 			
@@ -57,18 +59,27 @@ public class UserController {
 	
 	@RequestMapping(value = "/validate/{username}", method = RequestMethod.GET)
 	@ResponseStatus(value = HttpStatus.OK)
-	public Map<String, Boolean> validateUserName(@PathVariable(value = "username") String username) {
-		
+	public ResponseEntity<AxisResponse> validateUserName(@PathVariable(value = "username") String username) {
+		this.axisResponse = new AxisResponse();
 		System.out.println("Received username: " + username);
 		
-		boolean isUserExist = userService.validateUserName(username);
-		
-		if(isUserExist) {
-			return Collections.singletonMap("success", true);
-		}
-		else {
-			return Collections.singletonMap("success", false);
-		}
+		try {
+			boolean isUserExist = userService.validateUserName(username);
+			this.axisResponse.setStatus(AxisResponseCodes.STATUS_VALID);
+			if(isUserExist) {
+				this.axisResponse.setData(Collections.singletonMap("isUsernameExist", true));
+				
+			}
+			else {
+				this.axisResponse.setData(Collections.singletonMap("isUsernameExist", false));
+			}
+			return new ResponseEntity<AxisResponse>(this.axisResponse, HttpStatus.OK);	
+			
+		} catch (Exception ex) {
+			this.axisResponse.setStatus(AxisResponseCodes.STATUS_INVALID);
+			return new ResponseEntity<AxisResponse>(this.axisResponse, HttpStatus.SERVICE_UNAVAILABLE);
+			
+		} 
 		
 	}
 	
@@ -76,7 +87,7 @@ public class UserController {
 	@ResponseStatus(value = HttpStatus.CREATED)
 	public Map<String, Boolean> create(@RequestBody User user) {	
 		
-		if (!(this.validateUserName(user.getUserName()).get("success"))) {
+		if (!this.userService.validateUserName(user.getUserName())) {
 			boolean isUserSaved = userService.createUser(user);
 			if (isUserSaved) {
 				return Collections.singletonMap("success", true);
