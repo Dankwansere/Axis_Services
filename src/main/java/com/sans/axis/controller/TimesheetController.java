@@ -24,7 +24,7 @@ public class TimesheetController {
 	@Autowired
 	private ITimesheetService timesheetService;
 	
-	@RequestMapping(value = "/submitTimesheetForm", method = RequestMethod.POST)
+	@RequestMapping(value = "submitTimesheetForm", method = RequestMethod.POST)
 	public Map<String, Boolean> submitTimeSheet(@RequestBody UserTimesheet[] userTimesheet) {
 		boolean success;
 		try {
@@ -37,7 +37,7 @@ public class TimesheetController {
 		return Collections.singletonMap("success", true);
 	}
 	
-	@RequestMapping(value = "/retrievePending/{userName}", method = RequestMethod.GET)
+	@RequestMapping(value = "retrievePending/{userName}", method = RequestMethod.GET)
 	public List<UserTimesheet> retrievePendingTimesheets(@PathVariable(value = "userName") String userName) {
 		
 		return this.timesheetService.retrievePendingTimesheets(userName);
