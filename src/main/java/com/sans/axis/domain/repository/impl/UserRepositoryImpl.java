@@ -31,19 +31,25 @@ public class UserRepositoryImpl implements IUserCustomRepository {
 	private IGenericControlListRepository genericControlListRepository;
 	
 	@Override
-	public User getUser(String userName, String passWord) {
+	public User getUser(String username, String password) {
 		User user;
-		Query query = em.createQuery("SELECT u from User u WHERE userName = :userName AND passWord = :passWord");
-		query.setParameter("userName", userName);
-		query.setParameter("passWord", passWord);
-		
 		try {
-			user = (User) query.getSingleResult();
-			return user;
-		} 
-		catch (Exception e) {
+			Query query = em.createQuery("SELECT u from User u WHERE username = :username AND password = :password");
+			query.setParameter("username", username);
+			query.setParameter("password", password);
 			
-			System.out.println("Unable to find user: " + e.getMessage());
+			System.out.println("Query: " + query.toString());
+			try {
+				user = (User) query.getSingleResult();
+				return user;
+			} 
+			catch (Exception e) {
+				
+				System.out.println("Unable to find user: " + e.getMessage());
+				return null;
+			}
+		} catch (Exception ex) {
+			System.out.println("Generating Query error: " + ex.getMessage());
 			return null;
 		}
 	}
@@ -67,7 +73,7 @@ public class UserRepositoryImpl implements IUserCustomRepository {
 	
 	@Override
 	public boolean validateUserName(String username) {
-		Query query = em.createQuery("SELECT userName from User u WHERE userName = :username");
+		Query query = em.createQuery("SELECT username from User u WHERE username = :username");
 		query.setParameter("username", username);
 		
 		try {
@@ -82,6 +88,25 @@ public class UserRepositoryImpl implements IUserCustomRepository {
 		}
 		catch (Exception ex) {
 			System.out.println("Something went wrong searching for user: " + ex.getMessage());
+			return false;
+		}
+	}
+	
+	@Override
+	public boolean validateEmail(String email) {
+		Query query = em.createQuery("SELECT email from User u WHERE email = :email");
+		query.setParameter("email", email);
+		
+		try {
+			List<User> result = query.getResultList();
+			
+			if(result.size() == 0) {
+				return false;
+			} else {
+				return true;
+			}
+		} catch(Exception ex) {
+			System.out.println("Something went wrong validating email in database: " + ex.getMessage());
 			return false;
 		}
 	}
