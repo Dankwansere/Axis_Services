@@ -13,6 +13,8 @@ public interface IUserCustomRepository {
 	public User getUser(String userName, String passWord);
 		
 	public boolean validateUserName(String username);
+	
+	public boolean validateEmail(String email);
 		
 	public boolean createUser(User user);
 	
