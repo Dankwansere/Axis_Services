@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.sans.axis.domain.AxisResponse;
 import com.sans.axis.domain.GenericControlList;
 import com.sans.axis.domain.User;
+import com.sans.axis.domain.UserSingleInfoValidator;
 import com.sans.axis.service.IUserService;
 import com.sans.axis.commons.AxisResponseCodes;
 
@@ -32,13 +33,13 @@ public class UserController {
 	private AxisResponse axisResponse;
 	
 	
-	@RequestMapping(value = "/login", method = RequestMethod.POST)
+	@RequestMapping(value = "login", method = RequestMethod.POST)
 	public ResponseEntity<AxisResponse> getUser(@RequestBody User user) {
 		
 		this.axisResponse = new AxisResponse();
 		
 		try {
-			this.user = userService.getUser(user.getUserName(), user.getPassWord());
+			this.user = userService.getUser(user.getUsername(), user.getPassword());
 			if(this.user == null) {
 				this.axisResponse.setStatus(AxisResponseCodes.STATUS_INVALID);
 				return new ResponseEntity<AxisResponse>(this.axisResponse, HttpStatus.OK);
@@ -57,37 +58,48 @@ public class UserController {
 		
 	}
 	
-	@RequestMapping(value = "/validate/{username}", method = RequestMethod.GET)
+	@RequestMapping(value = "validate", method = RequestMethod.POST)
 	@ResponseStatus(value = HttpStatus.OK)
-	public ResponseEntity<AxisResponse> validateUserName(@PathVariable(value = "username") String username) {
+	public ResponseEntity<AxisResponse> ValidateSingleUserInfo(@RequestBody UserSingleInfoValidator info) {
 		this.axisResponse = new AxisResponse();
-		System.out.println("Received username: " + username);
+		System.out.println("Validator type: " + info.getValidatorType());;
+		System.out.println("Received username: " + info.getValue());
+		boolean isInfoExist = false;
 		
-		try {
-			boolean isUserExist = userService.validateUserName(username);
-			this.axisResponse.setStatus(AxisResponseCodes.STATUS_VALID);
-			if(isUserExist) {
-				this.axisResponse.setData(Collections.singletonMap("isUsernameExist", true));
+		//validate username
+		if(info.getValidatorType() == 0) {
+			try {
+				isInfoExist = userService.validateUserName(info.getValue());
+				this.axisResponse.setStatus(AxisResponseCodes.STATUS_VALID);
+				this.axisResponse.setData(Collections.singletonMap("isInfoExist", isInfoExist));
 				
+			} catch (Exception ex) {
+				this.axisResponse.setStatus(AxisResponseCodes.STATUS_INVALID);
+				return new ResponseEntity<AxisResponse>(this.axisResponse, HttpStatus.SERVICE_UNAVAILABLE);
+			} 
+		} else if(info.getValidatorType() == 1) {
+			try {
+				isInfoExist = userService.validateEmail(info.getValue());
+				this.axisResponse.setStatus(AxisResponseCodes.STATUS_VALID);
+				this.axisResponse.setData(Collections.singletonMap("isInfoExist", isInfoExist));
+				
+			} catch(Exception ex) {
+				this.axisResponse.setStatus(AxisResponseCodes.STATUS_INVALID);
+				this.axisResponse.setException(ex.getMessage());
+				return new ResponseEntity<AxisResponse>(this.axisResponse, HttpStatus.SERVICE_UNAVAILABLE);
 			}
-			else {
-				this.axisResponse.setData(Collections.singletonMap("isUsernameExist", false));
-			}
-			return new ResponseEntity<AxisResponse>(this.axisResponse, HttpStatus.OK);	
 			
-		} catch (Exception ex) {
-			this.axisResponse.setStatus(AxisResponseCodes.STATUS_INVALID);
-			return new ResponseEntity<AxisResponse>(this.axisResponse, HttpStatus.SERVICE_UNAVAILABLE);
-			
-		} 
-		
-	}
+		}
 	
-	@RequestMapping(value = "/create", method = RequestMethod.POST)
+		return new ResponseEntity<AxisResponse>(this.axisResponse, HttpStatus.OK);	
+	}
+
+	
+	@RequestMapping(value = "create", method = RequestMethod.POST)
 	@ResponseStatus(value = HttpStatus.CREATED)
 	public Map<String, Boolean> create(@RequestBody User user) {	
 		
-		if (!this.userService.validateUserName(user.getUserName())) {
+		if (!this.userService.validateUserName(user.getUsername())) {
 			boolean isUserSaved = userService.createUser(user);
 			if (isUserSaved) {
 				return Collections.singletonMap("success", true);
@@ -100,7 +112,7 @@ public class UserController {
 		
 	}
 	
-	@RequestMapping(value = "/timesheet", method = RequestMethod.GET)
+	@RequestMapping(value = "timesheet", method = RequestMethod.GET)
 	public ResponseEntity<ArrayList<GenericControlList>> getUserProjects() {
 		
 		ArrayList<GenericControlList> projectList = userService.getUserProjects();
