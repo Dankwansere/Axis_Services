@@ -22,7 +22,7 @@ public class UserService implements IUserService  {
 		try {
 			User user = customUserRepository.getUser(userName, passWord);	
 			if(user != null) {
-				user.setPassWord("");
+				user.setPassword("");
 				return user;
 			}
 			else {
@@ -45,16 +45,20 @@ public class UserService implements IUserService  {
 		return customUserRepository.validateUserName(username);
 	}
 	
+	@Override
+	public boolean validateEmail(String email) {
+		return customUserRepository.validateEmail(email);
+	}
+	
 	
 	@Override
 	public boolean createUser(User user) {
-		if(user.getUserName() == null || user.getFirstName() == null|| user.getEmailAdd() == null) {
+		if(user.getUsername() == null || user.getFirstname() == null|| user.getEmail() == null) {
 			return false;
 		}
 		else {
 			return customUserRepository.createUser(user);
 		}
-		
 	}
 
 }

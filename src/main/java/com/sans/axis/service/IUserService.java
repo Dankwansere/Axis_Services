@@ -15,5 +15,7 @@ public interface IUserService {
 	public boolean createUser(User user);
 	
 	public boolean validateUserName(String username);
+	
+	public boolean validateEmail(String email);
 
 }
