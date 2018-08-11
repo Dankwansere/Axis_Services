@@ -6,6 +6,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 @Entity
 @Table(name="user")
@@ -16,19 +17,22 @@ public class User {
 	private long id;
 	
 	@Column(name="user_name")
-	private String userName;
+	private String username;
 
 	@Column(name="first_name")
-	private String firstName;
+	private String firstname;
+	
+	@Transient
+	private String middlename;
 	
 	@Column(name="last_name")
-	private String lastName;
+	private String lastname;
 	
 	@Column(name="email_add")
-	private String emailAdd;
+	private String email;
 	
 	@Column(name="password")
-	private String passWord;
+	private String password;
 	
 	@Column(name="gender")
 	private String gender;
@@ -36,55 +40,79 @@ public class User {
 	@Column(name="role")
 	private String role;
 	
-	public User() {
-		
-	}
+	@Transient
+	private String city;
+	@Transient
+	private String province;
+	@Transient
+	private String postalcode;
+	
+	public User() {}
 	
 	public User(String firstName, String lastName) {
 		super();
-		this.firstName = firstName;
-		this.lastName = lastName;
+		this.firstname = firstName;
+		this.lastname = lastName;
 	}
 	public long getId() {
 		return id;
 	}
 	
-	public String getUserName() {
-		return userName;
-	}
-
-	public void setUserName(String userName) {
-		this.userName = userName;
-	}
-	
 	public void setId(long id) {
 		this.id = id;
 	}
-	public String getFirstName() {
-		return firstName;
+
+	public String getUsername() {
+		return username;
 	}
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
+
+	public void setUsername(String username) {
+		this.username = username;
 	}
-	public String getLastName() {
-		return lastName;
+
+	public String getFirstname() {
+		return firstname;
 	}
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
+
+	public void setFirstname(String firstname) {
+		this.firstname = firstname;
 	}
-	public String getEmailAdd() {
-		return emailAdd;
+
+	public String getLastname() {
+		return lastname;
 	}
-	public void setEmailAdd(String emailAdd) {
-		this.emailAdd = emailAdd;
+
+	public void setLastname(String lastname) {
+		this.lastname = lastname;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	
+	public String getMiddlename() {
+		return middlename;
+	}
+	public void setMiddlename(String middlename) {
+		this.middlename = middlename;
 	}
 	
-	public String getPassWord() {
-		return passWord;
-	}
-	public void setPassWord(String passWord) {
-		this.passWord = passWord;
-	}
+	
+
+	
 	
 	public String getGender() {
 		return gender;
@@ -102,10 +130,29 @@ public class User {
 		this.role = role;
 	}
 	
+	public String getCity() {
+		return city;
+	}
+	public void setCity(String city) {
+		this.city = city;
+	}
+	public String getProvince() {
+		return province;
+	}
+	public void setProvince(String province) {
+		this.province = province;
+	}
+	public String getPostalcode() {
+		return postalcode;
+	}
+	public void setPostalcode(String postalcode) {
+		this.postalcode = postalcode;
+	}
+	
 	@Override
 	public String toString() {
-		return "Username: " + this.getUserName() + " First name: " + this.getFirstName() +
-				"\nLast name: " + this.getLastName() + " Email address: " + this.getEmailAdd() +
+		return "Username: " + this.getUsername() + " First name: " + this.getFirstname() +
+				"\nLast name: " + this.getLastname() + " Email address: " + this.getEmail() +
 				"\nGender: " + this.getGender();
 	}
 	
