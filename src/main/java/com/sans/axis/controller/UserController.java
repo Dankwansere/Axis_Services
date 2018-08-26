@@ -3,12 +3,10 @@ package com.sans.axis.controller;
 import java.util.ArrayList;
 
 import java.util.Collections;
-import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -16,10 +14,13 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.sans.axis.domain.AxisResponse;
+import com.sans.axis.domain.Employee;
 import com.sans.axis.domain.GenericControlList;
 import com.sans.axis.domain.User;
 import com.sans.axis.domain.UserSingleInfoValidator;
+import com.sans.axis.service.IEmployeeService;
 import com.sans.axis.service.IUserService;
+import com.sans.axis.commons.AxisException;
 import com.sans.axis.commons.AxisResponseCodes;
 
 @RestController
@@ -29,8 +30,13 @@ public class UserController {
 	
 	@Autowired
 	private IUserService userService;
+	
+	@Autowired
+	private IEmployeeService employeeService;
+	
 	private User user;
 	private AxisResponse axisResponse;
+	private AxisException axisException;
 	
 	
 	@RequestMapping(value = "login", method = RequestMethod.POST)
@@ -97,19 +103,52 @@ public class UserController {
 	
 	@RequestMapping(value = "create", method = RequestMethod.POST)
 	@ResponseStatus(value = HttpStatus.CREATED)
-	public Map<String, Boolean> create(@RequestBody User user) {	
+	public ResponseEntity<AxisResponse> create(@RequestBody User user) {	
 		
-		if (!this.userService.validateUserName(user.getUsername())) {
-			boolean isUserSaved = userService.createUser(user);
-			if (isUserSaved) {
-				return Collections.singletonMap("success", true);
-			} else {
-				return Collections.singletonMap("success", false);
-			} 
-		} else {
-			return Collections.singletonMap("success", false);
+		System.out.println("User: " + user.toString());
+		
+		this.axisResponse = new AxisResponse();
+		
+		
+		try {
+			boolean isDataValid;
+			//validate user name
+			isDataValid = this.userService.validateUserName(user.getUsername());
+			if(isDataValid) {
+				this.axisException = new AxisException(AxisResponseCodes.USER_ALREADY_EXISTS);
+				this.axisResponse.setStatus(AxisResponseCodes.STATUS_INVALID);
+				this.axisResponse.setException(this.axisException.getMessage());
+				return new ResponseEntity<AxisResponse>(this.axisResponse, HttpStatus.OK);
+			}
+			
+			//validate email
+			isDataValid = this.userService.validateEmail(user.getEmail());
+			if(isDataValid) {
+				this.axisException = new AxisException(AxisResponseCodes.EMAIL_ALREADY_EXISTS);
+				this.axisResponse.setStatus(AxisResponseCodes.STATUS_INVALID);
+				this.axisResponse.setException(this.axisException.getMessage());
+				return new ResponseEntity<AxisResponse>(this.axisResponse, HttpStatus.OK);
+			}
+			
+			//If validation is success then create account
+			User userDTO = this.userService.createUser(user);
+			
+			if(userDTO != null) {
+			 Employee employeeDTO =	this.employeeService.createEmployee(userDTO);
+			}
+			
+			
+		} catch (NullPointerException ex) {
+			this.axisResponse.setStatus(AxisResponseCodes.STATUS_INVALID);
+			this.axisResponse.setException(ex.getMessage());
 		}
 		
+		catch(Exception ex) {
+			this.axisResponse.setStatus(AxisResponseCodes.STATUS_INVALID);
+			this.axisResponse.setException(ex.getMessage());
+			
+		}
+		return new ResponseEntity<AxisResponse>(this.axisResponse, HttpStatus.OK);	
 	}
 	
 	@RequestMapping(value = "timesheet", method = RequestMethod.GET)
