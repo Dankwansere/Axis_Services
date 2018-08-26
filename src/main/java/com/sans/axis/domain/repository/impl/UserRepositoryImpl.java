@@ -1,7 +1,5 @@
 package com.sans.axis.domain.repository.impl;
 
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.queryParam;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,6 +24,7 @@ public class UserRepositoryImpl implements IUserCustomRepository {
 	
 	@Autowired
 	private IUserRepository userRepository; 
+	
 	
 	@Autowired
 	private IGenericControlListRepository genericControlListRepository;
@@ -112,14 +111,13 @@ public class UserRepositoryImpl implements IUserCustomRepository {
 	}
 
 	@Override
-	public boolean createUser(User user) {
+	public User createUser(User userDTO) {
 		try {
-			userRepository.save(user);
-			return true;
+			return userRepository.save(userDTO);
 		}
 		catch(Exception ex) {
 			System.out.println("Error: " + ex.getMessage());
-			return false;
+			return null;
 		}
 	}
 
