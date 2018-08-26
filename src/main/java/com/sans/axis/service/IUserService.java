@@ -2,6 +2,7 @@ package com.sans.axis.service;
 
 import java.util.ArrayList;
 
+import com.sans.axis.commons.AxisException;
 import com.sans.axis.domain.GenericControlList;
 import com.sans.axis.domain.User;
 
@@ -12,7 +13,7 @@ public interface IUserService {
 	
 	public ArrayList<GenericControlList> getUserProjects();
 	
-	public boolean createUser(User user);
+	public User createUser(User user) throws AxisException;
 	
 	public boolean validateUserName(String username);
 	
