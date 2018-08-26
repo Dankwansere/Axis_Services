@@ -12,6 +12,7 @@ import javax.persistence.Transient;
 @Table(name="user")
 public class User {
 
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private long id;
@@ -22,7 +23,7 @@ public class User {
 	@Column(name="first_name")
 	private String firstname;
 	
-	@Transient
+	@Column(name="middle_name")
 	private String middlename;
 	
 	@Column(name="last_name")
@@ -40,12 +41,17 @@ public class User {
 	@Column(name="role")
 	private String role;
 	
-	@Transient
+	@Column(name="city")
 	private String city;
-	@Transient
+	
+	@Column(name="province")
 	private String province;
-	@Transient
+	
+	@Column(name="postal_code")
 	private String postalcode;
+	
+	@Transient
+	private Employee employee;
 	
 	public User() {}
 	
@@ -109,11 +115,7 @@ public class User {
 	public void setMiddlename(String middlename) {
 		this.middlename = middlename;
 	}
-	
-	
-
-	
-	
+		
 	public String getGender() {
 		return gender;
 	}
@@ -149,15 +151,21 @@ public class User {
 		this.postalcode = postalcode;
 	}
 	
-	@Override
-	public String toString() {
-		return "Username: " + this.getUsername() + " First name: " + this.getFirstname() +
-				"\nLast name: " + this.getLastname() + " Email address: " + this.getEmail() +
-				"\nGender: " + this.getGender();
+	public Employee getEmployee() {
+		return employee;
+	}
+
+	public void setEmployee(Employee employee) {
+		this.employee = employee;
 	}
 	
-	
-	
-	
+
+	@Override
+	public String toString() {
+		return "User [id=" + id + ", username=" + username + ", firstname=" + firstname + ", middlename=" + middlename
+				+ ", lastname=" + lastname + ", email=" + email + ", password=" + password + ", gender=" + gender
+				+ ", role=" + role + ", city=" + city + ", province=" + province + ", postalcode=" + postalcode
+				+ ", employee=" + employee + "]";
+	}
 	
 }
