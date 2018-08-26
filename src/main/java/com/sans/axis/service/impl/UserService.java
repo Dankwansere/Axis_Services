@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.sans.axis.commons.AxisException;
+import com.sans.axis.commons.AxisResponseCodes;
 import com.sans.axis.domain.GenericControlList;
 import com.sans.axis.domain.User;
 import com.sans.axis.domain.repository.IUserCustomRepository;
@@ -52,9 +54,13 @@ public class UserService implements IUserService  {
 	
 	
 	@Override
-	public boolean createUser(User user) {
+	public User createUser(User user) throws AxisException {
 		if(user.getUsername() == null || user.getFirstname() == null|| user.getEmail() == null) {
-			return false;
+			throw new NullPointerException();
+		} else if(user.getUsername().equals("") || user.getFirstname().equals("") || user.getLastname().equals("")) {
+			throw new AxisException(AxisResponseCodes.CREATE_REQUIRED_NAMES);
+		} else if(user.getEmail().equals("")) {
+			throw new AxisException(AxisResponseCodes.EMAIL_ALREADY_EXISTS);
 		}
 		else {
 			return customUserRepository.createUser(user);
