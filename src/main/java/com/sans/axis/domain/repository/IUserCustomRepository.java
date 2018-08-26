@@ -16,7 +16,7 @@ public interface IUserCustomRepository {
 	
 	public boolean validateEmail(String email);
 		
-	public boolean createUser(User user);
+	public User createUser(User user);
 	
 	ArrayList<GenericControlList> getUserProjectList();
 
