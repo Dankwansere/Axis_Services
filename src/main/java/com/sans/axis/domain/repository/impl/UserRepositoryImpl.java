@@ -10,6 +10,7 @@ import javax.persistence.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.sans.axis.commons.AxisException;
 import com.sans.axis.domain.GenericControlList;
 import com.sans.axis.domain.User;
 import com.sans.axis.domain.repository.IGenericControlListRepository;
@@ -52,7 +53,8 @@ public class UserRepositoryImpl implements IUserCustomRepository {
 			return null;
 		}
 	}
-
+	
+	
 	public ArrayList<GenericControlList> getUserProjectList() {
 		
 		
@@ -111,12 +113,36 @@ public class UserRepositoryImpl implements IUserCustomRepository {
 	}
 
 	@Override
-	public User createUser(User userDTO) {
+	public User createUser(User userDTO) throws AxisException {
 		try {
 			return userRepository.save(userDTO);
 		}
 		catch(Exception ex) {
-			System.out.println("Error: " + ex.getMessage());
+			throw new AxisException(ex.getMessage());
+		}
+	}
+
+
+
+	@Override
+	public User findByUsername(String username) {
+		User user;
+		try {
+			Query query = em.createQuery("SELECT u from User u WHERE username = :username");
+			query.setParameter("username", username);
+			
+			System.out.println("Query: " + query.toString());
+			try {
+				user = (User) query.getSingleResult();
+				return user;
+			} 
+			catch (Exception e) {
+				
+				System.out.println("Unable to find user: " + e.getMessage());
+				return null;
+			}
+		} catch (Exception ex) {
+			System.out.println("Generating Query error: " + ex.getMessage());
 			return null;
 		}
 	}
