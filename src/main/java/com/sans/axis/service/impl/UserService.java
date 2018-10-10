@@ -3,6 +3,9 @@ package com.sans.axis.service.impl;
 import java.util.ArrayList;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.sans.axis.commons.AxisException;
@@ -13,7 +16,7 @@ import com.sans.axis.domain.repository.IUserCustomRepository;
 import com.sans.axis.service.IUserService;
 
 @Service
-public class UserService implements IUserService  {
+public class UserService implements IUserService, UserDetailsService   {
 
 	@Autowired
 	private IUserCustomRepository customUserRepository;
@@ -60,11 +63,23 @@ public class UserService implements IUserService  {
 		} else if(user.getUsername().equals("") || user.getFirstname().equals("") || user.getLastname().equals("")) {
 			throw new AxisException(AxisResponseCodes.CREATE_REQUIRED_NAMES);
 		} else if(user.getEmail().equals("")) {
-			throw new AxisException(AxisResponseCodes.EMAIL_ALREADY_EXISTS);
+			throw new AxisException(AxisResponseCodes.CREATE_EMAIL_EMPTY);
 		}
 		else {
 			return customUserRepository.createUser(user);
 		}
+	}
+
+	@Override
+	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+		
+		User user = this.customUserRepository.findByUsername(username);
+		
+		if(user == null) {
+			throw new UsernameNotFoundException(username); 
+		}
+		
+		return new User(user.getUsername(), user.getPassword());
 	}
 
 }
