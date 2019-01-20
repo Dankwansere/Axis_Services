@@ -21,6 +21,7 @@ import com.sans.axis.service.impl.UserService;
 
 import static com.sans.axis.security.SecurityConstants.SIGN_UP_URL;
 import static com.sans.axis.security.SecurityConstants.LOGIN_URL;
+import static com.sans.axis.security.SecurityConstants.LOGGER_URL;
 
 
 @EnableWebSecurity
@@ -39,6 +40,7 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
         http.cors().and().csrf().disable().authorizeRequests()
                 .antMatchers(HttpMethod.POST, SIGN_UP_URL).permitAll()
                 .antMatchers(HttpMethod.POST, LOGIN_URL).permitAll()
+                .antMatchers(HttpMethod.POST, LOGGER_URL).permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .addFilter(new JWTAuthenticationFilter(this.authenticationManager))
