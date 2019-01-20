@@ -4,7 +4,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.sans.axis.domain.UserTimesheet;
+import com.sans.axis.domain.HR.UserTimesheet;
 import com.sans.axis.domain.repository.ITimesheetRepository;
 import com.sans.axis.service.ITimesheetService;
 

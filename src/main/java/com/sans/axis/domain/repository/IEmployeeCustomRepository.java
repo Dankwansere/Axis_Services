@@ -1,7 +1,7 @@
 package com.sans.axis.domain.repository;
 
-import com.sans.axis.domain.Employee;
 import com.sans.axis.domain.User;
+import com.sans.axis.domain.HR.Employee;
 
 public interface IEmployeeCustomRepository {
 	

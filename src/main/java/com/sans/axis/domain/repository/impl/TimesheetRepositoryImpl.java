@@ -12,7 +12,7 @@ import javax.transaction.Transactional;
 import org.springframework.stereotype.Repository;
 
 import com.sans.axis.commons.DateCommon;
-import com.sans.axis.domain.UserTimesheet;
+import com.sans.axis.domain.HR.UserTimesheet;
 import com.sans.axis.domain.repository.ITimesheetRepository;
 @Repository
 public class TimesheetRepositoryImpl implements ITimesheetRepository  {

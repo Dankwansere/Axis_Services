@@ -2,7 +2,7 @@ package com.sans.axis.domain.repository;
 
 import java.util.List;
 
-import com.sans.axis.domain.UserTimesheet;
+import com.sans.axis.domain.HR.UserTimesheet;
 
 public interface ITimesheetRepository {
 

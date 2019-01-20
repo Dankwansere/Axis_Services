@@ -13,6 +13,8 @@ import javax.persistence.Transient;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.sans.axis.domain.HR.Employee;
+
 @Entity
 @Table(name="user")
 public class User implements UserDetails {

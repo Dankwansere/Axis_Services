@@ -1,4 +1,4 @@
-package com.sans.axis.domain;
+package com.sans.axis.domain.HR;
 
 import java.util.Date;
 

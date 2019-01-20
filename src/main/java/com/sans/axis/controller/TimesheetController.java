@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.sans.axis.domain.UserTimesheet;
+import com.sans.axis.domain.HR.UserTimesheet;
 import com.sans.axis.service.ITimesheetService;
 
 import org.springframework.web.bind.annotation.RequestMethod;
