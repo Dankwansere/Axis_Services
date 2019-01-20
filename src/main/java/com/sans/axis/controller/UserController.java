@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.sans.axis.domain.AxisResponse;
 import com.sans.axis.domain.Employee;
 import com.sans.axis.domain.GenericControlList;
@@ -67,6 +66,7 @@ public class UserController {
 		}
 		
 	}
+	
 	
 	@RequestMapping(value = "validate", method = RequestMethod.POST)
 	@ResponseStatus(value = HttpStatus.OK)
@@ -160,5 +160,4 @@ public class UserController {
 		
 	}
 	
-
 }

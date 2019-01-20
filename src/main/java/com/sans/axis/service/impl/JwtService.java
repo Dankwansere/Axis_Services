@@ -2,11 +2,9 @@ package com.sans.axis.service.impl;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.time.LocalDateTime;
 import java.util.Date;
 
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import static com.sans.axis.security.SecurityConstants.EXPIRATION_TIME;
